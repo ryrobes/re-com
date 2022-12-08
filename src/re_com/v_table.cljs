@@ -49,8 +49,8 @@
         radius                (px (/ width 2))
         scrollbar-color       "#eee" ;; "#f3f3f3"  "rgba(0,0,0,0.05)"  ;; These colors could be passed in as a single map,
         scrollbar-hover-color "#ccc" ;; "#cccccc"  "rgba(0,0,0,0.20)"  ;; or we could add :style and :thumb-style args (wouldn't work for hover colors)
-        thumb-color           "#bbb" ;; "#b7b7b7"  "rgba(0,0,0,0.25)"
-        thumb-hover-color     "#999" ;; "#9a9a9a"  "rgba(0,0,0,0.30)"
+        thumb-color           "#00000077" ;; "#bbb" ;; "#b7b7b7"  "rgba(0,0,0,0.25)"
+        thumb-hover-color     "#bbb" ;; "#999" ;; "#9a9a9a"  "rgba(0,0,0,0.30)"
         thumb-drag-color      "#777" ;; "#707070"  "rgba(0,0,0,0.45)"
         mouse-over?           (reagent/atom false)
         dragging?             (reagent/atom false)
