@@ -42,6 +42,7 @@
    - scroll-pos     [number] current px scroll position for the beginning of the scrollbar 'thumb'
    - on-change      [fn] called every time the thumb is dragged. Args: new-scroll-pos
    - style          [map] CSS style map
+   - thumb-style    [map] CSS style map just for thumb box
    "
   [& {:keys [type width on-change]
       :or   {width 10}}]
@@ -49,8 +50,8 @@
         radius                (px (/ width 2))
         scrollbar-color       "#eee" ;; "#f3f3f3"  "rgba(0,0,0,0.05)"  ;; These colors could be passed in as a single map,
         scrollbar-hover-color "#ccc" ;; "#cccccc"  "rgba(0,0,0,0.20)"  ;; or we could add :style and :thumb-style args (wouldn't work for hover colors)
-        thumb-color           "#00000077" ;; "#bbb" ;; "#b7b7b7"  "rgba(0,0,0,0.25)"
-        thumb-hover-color     "#bbb" ;; "#999" ;; "#9a9a9a"  "rgba(0,0,0,0.30)"
+        thumb-color           "#bbb" ;"#00000077" ;; "#bbb" ;; "#b7b7b7"  "rgba(0,0,0,0.25)"
+        thumb-hover-color     "#999" ;"#bbb" ;; "#999" ;; "#9a9a9a"  "rgba(0,0,0,0.30)"
         thumb-drag-color      "#777" ;; "#707070"  "rgba(0,0,0,0.45)"
         mouse-over?           (reagent/atom false)
         dragging?             (reagent/atom false)
@@ -107,7 +108,7 @@
                                   (reset! dragging? true)
                                   (.stopPropagation event)))] ;; Prevents parent div getting this mouse-down as well
     (fn scrollbar-renderer
-      [& {:keys [length width content-length scroll-pos style src]
+      [& {:keys [length width content-length scroll-pos style thumb-style src]
           :or   {width 10}}]
       (let [thumb-ratio             (/ content-length length)
             thumb-length            (max (* 1.5 width) (/ length thumb-ratio))
@@ -148,14 +149,19 @@
                   :height (if horizontal?
                             (px width)
                             (px (if show? thumb-length 0)))
-                  :style  {:background-color (if (or @mouse-over? @dragging?)
-                                               (if @dragging? thumb-drag-color thumb-hover-color)
-                                               thumb-color)
-                           :cursor           "default"
-                           :border-radius    radius
-                           (if horizontal?
-                             :margin-left
-                             :margin-top)    (px internal-scroll-pos)}
+                  :style  (merge {:background-color (if (or @mouse-over? @dragging?)
+                                                      (if @dragging? thumb-drag-color
+                                                          (get thumb-style :color thumb-hover-color) ;thumb-hover-color
+                                                          )
+                                                      (get thumb-style :background-color thumb-color) ;thumb-color
+                                                      )
+                                  :cursor           "default"
+                                  :border-radius    radius
+                                  (if horizontal?
+                                    :margin-left
+                                    :margin-top)    (px internal-scroll-pos)}
+                                 thumb-style)
+
                   :attr   {:on-mouse-down (handler-fn (thumb-mouse-down event internal-scroll-pos))} ;; TODO: Best way to move this fn to outer fn? (closes over internal-scroll-pos)
                   :child  ""]]))))
 
@@ -1311,6 +1317,7 @@
                                           :on-change      on-h-scroll-change
                                           :style          (merge {:margin (px-n scrollbar-margin 0)}
                                                                  (get-in parts [:h-scroll :style]))
+                                          :thumb-style    (get-in parts [:h-scroll :thumb-style])
                                           :attr           (get-in parts [:h-scroll :attr])]]]
 
                              ;; ========== Right section (7, 8, 9) - row footer area
@@ -1390,6 +1397,7 @@
                                                   :on-change      on-v-scroll-change
                                                   :style          (merge {:margin (px-n 0 scrollbar-margin)}
                                                                          (get-in parts [:v-scroll :style]))
+                                                  :thumb-style    (get-in parts [:v-scroll :thumb-style])
                                                   :attr           (get-in parts [:v-scroll :attr])]]
                                          [box/gap
                                           :src  (at)
