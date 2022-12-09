@@ -12,7 +12,8 @@
      :hover-color "x" ;; gets subbed in as background-color for thumb on hover
      :background-color "x" ;; default thumb color
      ;(plus all regular CSS)
-     }```
+     }
+```
 
 # re-com
 
