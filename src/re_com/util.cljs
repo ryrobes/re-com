@@ -33,6 +33,10 @@
     @val-or-atom
     val-or-atom))
 
+(defn deselect-keys [m ks]
+  (->> (clojure.set/difference (set (keys m)) (set ks))
+       (select-keys m)))
+
 
 (defn deref-or-value-peek
   "Takes a value or an atom

@@ -6,7 +6,7 @@
     [clojure.set            :refer [superset?]]
     [re-com.config          :refer [debug?]]
     [re-com.debug           :as    debug]
-    [re-com.util            :refer [deref-or-value-peek]]
+    [re-com.util            :refer [deref-or-value-peek deselect-keys]]
     [reagent.core           :as    reagent]
     [reagent.impl.component :as    component]
     [reagent.impl.template  :refer [valid-tag?]]
@@ -434,6 +434,11 @@
                            (if-not (true? valid?)
                              (reduced valid?)
                              true))
+                  :thumb-style (let [valid? (css-style? (deselect-keys v2 [:drag-color :hover-color]))]
+                                             ;; ^ ignore pseudo thumb keys that never actually get inserted into style anyways
+                                 (if-not (true? valid?)
+                                   (reduced valid?)
+                                   true))
                   :attr  (let [valid? (html-attr? v2)]
                            (if-not (true? valid?)
                              (reduced valid?)

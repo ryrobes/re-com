@@ -8,7 +8,7 @@
     [re-com.config      :refer [debug? include-args-desc?]]
     [re-com.debug       :refer [->attr]]
     [re-com.box         :as    box]
-    [re-com.util        :as    util :refer [deref-or-value px-n]]
+    [re-com.util        :as    util :refer [deref-or-value px-n deselect-keys]]
     [re-com.validate    :refer [vector-atom? ifn-or-nil? map-atom? parts?]]
     [re-com.dmm-tracker :refer [make-dmm-tracker captureMouseMoves]]))
 
@@ -42,17 +42,17 @@
    - scroll-pos     [number] current px scroll position for the beginning of the scrollbar 'thumb'
    - on-change      [fn] called every time the thumb is dragged. Args: new-scroll-pos
    - style          [map] CSS style map
-   - thumb-style    [map] CSS style map just for thumb box
+   - thumb-style    [map] CSS style map for thumb box. Inlcudes 2 pseudo keys (:hover-color :drag-color), which are both :background-color
    "
   [& {:keys [type width on-change]
       :or   {width 10}}]
   (let [horizontal?           (= type :horizontal)
         radius                (px (/ width 2))
-        scrollbar-color       "#eee" ;; "#f3f3f3"  "rgba(0,0,0,0.05)"  ;; These colors could be passed in as a single map,
-        scrollbar-hover-color "#ccc" ;; "#cccccc"  "rgba(0,0,0,0.20)"  ;; or we could add :style and :thumb-style args (wouldn't work for hover colors)
-        thumb-color           "#bbb" ;"#00000077" ;; "#bbb" ;; "#b7b7b7"  "rgba(0,0,0,0.25)"
-        thumb-hover-color     "#999" ;"#bbb" ;; "#999" ;; "#9a9a9a"  "rgba(0,0,0,0.30)"
-        thumb-drag-color      "#777" ;; "#707070"  "rgba(0,0,0,0.45)"
+        scrollbar-color       "#eee" ;; "#f3f3f3"  "rgba(0,0,0,0.05)"
+        scrollbar-hover-color "#ccc" ;; "#cccccc"  "rgba(0,0,0,0.20)"
+        thumb-color           "#bbb" ;; "#bbb"     ;; default if no :background-color is in parts v/h-scroll [:v/h-scroll :thumb-style]
+        thumb-hover-color     "#999" ;; "#999"     ;; default if not pseudo key is in parts [:v/h-scroll :thumb-style :hover-color]
+        thumb-drag-color      "#777" ;; "#707070"  ;; default if not pseudo key is in parts [:v/h-scroll :thumb-style :drag-color]
         mouse-over?           (reagent/atom false)
         dragging?             (reagent/atom false)
         pos-on-scrollbar      (reagent/atom 0)
@@ -149,18 +149,15 @@
                   :height (if horizontal?
                             (px width)
                             (px (if show? thumb-length 0)))
-                  :style  (merge {:background-color (if (or @mouse-over? @dragging?)
-                                                      (if @dragging? thumb-drag-color
-                                                          (get thumb-style :color thumb-hover-color) ;thumb-hover-color
-                                                          )
-                                                      (get thumb-style :background-color thumb-color) ;thumb-color
-                                                      )
+                  :style  (merge (deselect-keys thumb-style [:drag-color :hover-color])
+                                 {:background-color (cond @dragging? (get thumb-style :drag-color thumb-drag-color)
+                                                          @mouse-over? (get thumb-style :hover-color thumb-hover-color)
+                                                          :else (get thumb-style :background-color thumb-color))
                                   :cursor           "default"
                                   :border-radius    radius
                                   (if horizontal?
                                     :margin-left
-                                    :margin-top)    (px internal-scroll-pos)}
-                                 thumb-style)
+                                    :margin-top)    (px internal-scroll-pos)})
 
                   :attr   {:on-mouse-down (handler-fn (thumb-mouse-down event internal-scroll-pos))} ;; TODO: Best way to move this fn to outer fn? (closes over internal-scroll-pos)
                   :child  ""]]))))

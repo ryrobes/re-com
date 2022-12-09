@@ -6,6 +6,10 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/day8/re-com?style=for-the-badge&logo=github)](https://github.com/day8/re-com/pulls)
 [![License](https://img.shields.io/github/license/day8/re-com.svg?style=for-the-badge)](license.txt)
 
+[ @ryrobes fork to allow scrollbar thumb styling via: 
+   [:parts :v-scroll/h-scroll :thumb-style] 
+    {:drag-color "x" :hover-color "X" (plus regular CSS)}]
+
 # re-com
 
 A ClojureScript library of UI components for [Reagent](http://reagent-project.github.io). 
