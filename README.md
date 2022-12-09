@@ -7,7 +7,8 @@
 [![License](https://img.shields.io/github/license/day8/re-com.svg?style=for-the-badge)](license.txt)
 
 ```clojure 
-;; @ryrobes fork to allow scrollbar thumb styling in v-table w: 
+;; [org.clojars.ryrobes/re-com "2.13.2-122-d2b8d22-SNAPSHOT"]
+;; @ryrobes: quick fork to allow scrollbar thumb styling in v-table w: 
    [:parts :simple-wrapper :v-scroll/h-scroll :thumb-style] 
 
     {:drag-color       "#ffffff"    ;; gets subbed in as background-color for thumb on drag
