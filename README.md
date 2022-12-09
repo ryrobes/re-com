@@ -6,12 +6,14 @@
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/day8/re-com?style=for-the-badge&logo=github)](https://github.com/day8/re-com/pulls)
 [![License](https://img.shields.io/github/license/day8/re-com.svg?style=for-the-badge)](license.txt)
 
-``` ;; @ryrobes fork to allow scrollbar thumb styling in v-table via: 
-   [:parts :v-scroll/h-scroll :thumb-style] 
-    {:drag-color "x"  ;; gets subbed in as background-color for thumb on drag
-     :hover-color "x" ;; gets subbed in as background-color for thumb on hover
-     :background-color "x" ;; default thumb color
-     ;(plus all regular CSS)
+```clojure 
+;; @ryrobes fork to allow scrollbar thumb styling in v-table w: 
+   [:parts :simple-wrapper :v-scroll/h-scroll :thumb-style] 
+
+    {:drag-color       "#ffffff"    ;; gets subbed in as background-color for thumb on drag
+     :hover-color      "#ffffff99"  ;; gets subbed in as background-color for thumb on hover
+     :background-color "#eeeeee"    ;; default thumb color
+     ;(plus all regular CSS keys)
      }
 ```
 
